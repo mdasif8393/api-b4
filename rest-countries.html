@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #countries-div{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            margin: 20px;
+        }
+        .singleCountryDiv{
+            background-color: rgb(222, 247, 247);
+            padding: 20px;
+        }
+        #country-div img{
+            width: 25%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="country-div">
+
+        </section>
+        <section id="countries-div">
+
+        </section>
+    </main>
+
+    <script>
+        fetch('https://restcountries.eu/rest/v2/all')
+        .then(res => res.json())
+        .then(data => displayCountries(data));
+
+        const displayCountries = (countries) =>{
+            const countriesDiv = document.getElementById('countries-div')
+            countries.map((country) =>{
+                const countryDiv = document.createElement('div');
+                countryDiv.className = "singleCountryDiv"
+
+                countryDiv.innerHTML = `
+                <h1>${country.name}</h1>
+                <p>${country.capital}</p>
+                <button onclick="showCountry('${country.name}')">See More</button>
+                `;
+                countriesDiv.appendChild(countryDiv);
+            })
+        }
+
+        const showCountry = name => {
+            fetch(`https://restcountries.eu/rest/v2/name/${name}`)
+            .then(res => res.json())
+            .then(data => singleCountry(data[0]))
+
+        }
+
+        const singleCountry = country =>{
+            console.log(country);
+            const countryDiv = document.getElementById('country-div');
+            countryDiv.innerHTML = `
+            <img src="${country.flag}">
+            <h1>${country.name}</h1>
+            `
+        }
+    </script>
+</body>
+</html>
